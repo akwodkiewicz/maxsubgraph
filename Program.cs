@@ -25,10 +25,12 @@ namespace Taio
 
             var result = McSplitAlgorithm.McSplit(graph1, graph2);
 
-            PrintResult(result);
-
+            for (int i = 0; i < result.Count; i++)
+            {
+                Console.WriteLine($"=== Maximum common induced subgraph no. {i + 1} ===");
+                PrintResult(result[i]);
+            }
         }
-
 
         static Graph DeserializeGraphFromCsv(string csvPath, char separator)
         {
@@ -56,13 +58,13 @@ namespace Taio
 
         static void PrintResult(List<(uint, uint)> result)
         {
-            Console.WriteLine("=== Maximum common induced subgraph ===");
             Console.WriteLine("G      H");
             Console.WriteLine("--------");
             foreach (var mapping in result)
             {
                 Console.WriteLine($"{mapping.Item1 + 1} <==> {mapping.Item2 + 1}");
             }
+            Console.WriteLine();
         }
     }
 }

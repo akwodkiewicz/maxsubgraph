@@ -7,9 +7,10 @@ namespace Taio
 {
     class McSplitAlgorithm
     {
-        static public List<(uint, uint)> McSplit(Graph graphG, Graph graphH)
+        static public List<List<(uint, uint)>> McSplit(Graph graphG, Graph graphH)
         {
-            var maxMapping = new List<(uint, uint)>();
+            var maxMappingSize = -1;
+            var maxMappings = new List<List<(uint, uint)>>();
 
             McSplitRecursive(
                 new List<(List<uint>, List<uint>)>()
@@ -23,16 +24,23 @@ namespace Taio
                     },
                 new List<(uint, uint)>());
 
-            return maxMapping;
+            return maxMappings;
 
             void McSplitRecursive(List<(List<uint>, List<uint>)> future, List<(uint, uint)> mapping)
             {
-                if (mapping.Count > maxMapping.Count)
+                if (mapping.Count > maxMappingSize)
                 {
-                    maxMapping = mapping;
+                    maxMappings.Clear();
+                    maxMappings.Add(mapping);
+                    maxMappingSize = mapping.Count;
                 }
-                var bound = mapping.Count + future.Sum(lists => Min(lists.Item1.Count, lists.Item2.Count));
-                if (bound <= maxMapping.Count) return;
+                else if (mapping.Count == maxMappingSize)
+                {
+                    maxMappings.Add(mapping);
+                }
+
+                var maximumPossible = mapping.Count + future.Sum(lists => Min(lists.Item1.Count, lists.Item2.Count));
+                if (maximumPossible < maxMappingSize) return;
 
                 var (g, h) = future.FirstOrDefault(f => IsClassConnected(f, mapping, graphG, graphH));
                 if (g == null) return;
